@@ -1,91 +1,41 @@
-var express = require('express'),
-	bodyParser = require('body-parser'),
+var express = require('express');
+var bodyParser = require('body-parser');
+var expressJwt = require('express-jwt');
+var jwtOptions = require('./jwtOptions.json');
 
-	jwt = require('jsonwebtoken'),
-	passport = require("passport"),
-	passportJWT = require("passport-jwt"),
-
-	ExtractJwt = passportJWT.ExtractJwt,
-	JwtStrategy = passportJWT.Strategy;
-
-	app = express(),
-	port = process.env.PORT || 1337;
+var app = express();
+var port = process.env.PORT || 1337;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(passport.initialize());
 
+//Use jwt to restrict access to api using jwt token
+app.use(expressJwt({
+	secret: jwtOptions.privateKey,
+	getToken: function (req) {
+		var token = req.headers['x-access-token'] ;
+		if (token) {
+			return token;
+		}
+		return null;
+	}
+}).unless({ path: [ '/login', '/register' ]}));
 
-
-
-var jwtOptions = {}
-jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeader();
-jwtOptions.secretOrKey = 'WeDidntStartTheFire';
-
-var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
-	console.log('payload received', jwt_payload);
-
-	var user = jwt_payload.id == 1;
-	if (user) {
-		next(null, user);
-	} else {
-		next(null, false);
+app.use(function (err, req, res, next) {
+	if (err.name === 'UnauthorizedError') {
+		return res.status(403).send({
+			success: false,
+			message: 'No token provided.'
+		});
 	}
 });
 
-passport.use(strategy);
+var userRoutes = require('./routes/userRoutes');
+userRoutes(app);
+var parkingRoutes = require('./routes/parkingRoutes');
+parkingRoutes(app);
 
-var authentication = passport.authenticate('jwt', { session: false });
-
-app.route('/login')
-	.post( (req, res) => {
-		var payload = {id: req.body.id};
-		var token = jwt.sign(payload, jwtOptions.secretOrKey);
-
-		res.status(200).send({
-			token: token,
-			username: 'Yoann'
-		});
-	});
-
-app.route('/register')
-	.post( (req, res) => {
-
-	});
-
-app.route('/users/:userId', authentication)
-	.get( (req, res) => {
-		res.status(200).send({
-			username: 'goodboy'
-		});
-	})
-	.put( (req, res) => {
-
-	})
-	.delete( (req, res) => {
-
-	});
-
-app.route('/parking/:spotId', authentication)
-	.get( (req, res) => {
-
-	})
-	.post( (req, res) => {
-
-	})
-	.put( (req, res) => {
-
-	})
-	.delete( (req, res) => {
-
-	});
-
-app.route('/parking/search', authentication)
-	.get( (req, res) => {
-
-	});
-
-
+//Send 404 error on url not found
 app.use( (req, res) => {
 	res.status(404).send({url: req.originalUrl + ' not found'})
 });

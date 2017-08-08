@@ -1,21 +1,29 @@
 'use strict';
 
-/** get spot by id */
+/** get spot by id
+*	@param {int} id - user id
+*/
 exports.getSpot = function(req, res) {
 	res.send("get spot");
 };
 
-/** add spot by id */
+/** add spot by id
+*	@param {int} id - user id
+*/
 exports.addSpot = function(req, res) {
 	res.send("add spot");
 };
 
-/** update spot by id */
+/** update spot by id
+*	@param {int} id - user id
+*/
 exports.updateSpot = function(req, res) {
 	res.send("update spot");
 };
 
-/** delete spot by id */
+/** delete spot by id
+*	@param {int} id - user id
+*/
 exports.deleteSpot = function(req, res) {
 	res.send("delete spot");
 };

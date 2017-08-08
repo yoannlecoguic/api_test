@@ -9,7 +9,7 @@ module.exports = function(app) {
 	app.route('/register')
 		.post(userController.register);
 
-	app.route('/users/:userId')
+	app.route('/users/:id')
 		.get(userController.getUser)
 		.put(userController.updateUser)
 		.delete(userController.deleteUser);

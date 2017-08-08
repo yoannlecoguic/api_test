@@ -28,17 +28,24 @@ exports.register = function(req, res) {
 	res.send("register");
 };
 
-/** Get user by id */
+/**
+* Get user by id
+*	@param {int} id - user id
+*/
 exports.getUser = function(req, res) {
 	res.send("get user");
 };
 
-/** Update user by id */
+/** Update user by id
+*	@param {int} id - user id
+*/
 exports.updateUser = function(req, res) {
 	res.send("update user");
 };
 
-/** Delete user by id */
+/** Delete user by id
+*	@param {int} id - user id
+*/
 exports.deleteUser = function(req, res) {
 	res.send("delete user");
 };

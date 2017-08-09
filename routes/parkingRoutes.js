@@ -3,9 +3,11 @@
 module.exports = function(app) {
 	var parkingController = require('../controllers/parkingController');
 
+	app.route('/parking')
+		.post(parkingController.addSpot);
+
 	app.route('/parking/:id')
 		.get(parkingController.getSpot)
-		.post(parkingController.addSpot)
 		.put(parkingController.updateSpot)
 		.delete(parkingController.deleteSpot);
 

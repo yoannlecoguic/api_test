@@ -2,6 +2,7 @@
 
 var Jwt = require('jsonwebtoken');
 var jwtOptions = require('../jwtOptions.json');
+var User = require('../models/userModel.js');
 
 /**
 *	Post credentials et get token if credentials matches
@@ -22,10 +23,15 @@ exports.login = function(req, res) {
 *	Register new user
 *	@param {string} username - user username
 *	@param {string} password - user password
-*	@param {string} type - ROLE_ADMIN or ROLE_PUBLIC
 */
 exports.register = function(req, res) {
-	res.send("register");
+	User.addUser(req.body.username, req.body.password, function(err, rows) {
+		if (err) {
+			res.json(err);
+		} else {
+			res.json(rows);
+		}
+	});
 };
 
 /**
